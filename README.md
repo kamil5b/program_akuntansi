@@ -14,8 +14,8 @@ A REST API referral system in pure go
   * models : program models, in this case only user model
   * database : connecting the program with database server
   * repositories : communicating with database, responsible for database CURD
-  * requests : responsible to processing data. Bridge between controller and repositories
-  * controllers : the API Gateway, bridging between input, request, and output
+  * controllers : responsible to processing data. Bridge between controller and repositories
+  * requests : the API Gateway, bridging between input, request, and output
   * routes : API routes to the controllers
 
 ## How to use
