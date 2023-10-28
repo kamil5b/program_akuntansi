@@ -7,6 +7,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+//ADD
+
 func ItemCreate(c *fiber.Ctx) error { //POST
 	var data models.Item
 	/*
@@ -48,6 +50,8 @@ func ItemCreate(c *fiber.Ctx) error { //POST
 	})
 }
 
+//UPDATE
+
 func ItemUpdate(c *fiber.Ctx) error { //POST
 	var data models.Item
 	/*
@@ -87,6 +91,8 @@ func ItemUpdate(c *fiber.Ctx) error { //POST
 		"message": "success",
 	})
 }
+
+//GET
 
 func GetItemByID(c *fiber.Ctx) error { //GET
 
