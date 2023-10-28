@@ -7,6 +7,7 @@ import (
 )
 
 // CREATE
+// HARUS DARI TRANSACTION
 func InventoryCreate(inventory models.Inventory) (uint, error) {
 	return repositories.CreateInventory(inventory)
 }
@@ -45,6 +46,7 @@ func InventoryOpenItem(id uint, open_unit uint) (uint, error) {
 	return InventoryCreate(credit_inventory)
 }
 
+// INVENTORY OUT HARUS ADA TRANSACTION
 func InventoryOut(id, out_unit uint) (uint, error) {
 	inventory, err := GetInventoryByID(id)
 	if int(inventory.Unit)-int(out_unit) < 0 {
