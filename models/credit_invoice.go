@@ -32,7 +32,7 @@ func (credit_invoice CreditInvoice) GetTotalTransaction() uint {
 	return Total - total_discount
 }
 
-func (ci *CreditInvoice) PayTransaction(PIC User, payment_type string, payment_id uint, nominal uint) (InvoiceHistory, error) {
+func (ci CreditInvoice) PayTransaction(PIC User, payment_type string, payment_id uint, nominal uint) (InvoiceHistory, error) {
 	var Payed uint = 0
 	database.DB.Table("credit_invoices").Select("sum(payment) as payed").Where("invoice_id = ? AND invoice_type = ?", ci.ID, "CREDIT").Preload(clause.Associations).Find(&Payed)
 	total_price := ci.GetTotalTransaction()

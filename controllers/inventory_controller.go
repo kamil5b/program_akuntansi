@@ -85,3 +85,23 @@ func GetCurrentInventoryByID(id uint) (models.Inventory, error) {
 func GetAllInventories() ([]models.Inventory, error) {
 	return repositories.GetAllInventories()
 }
+
+func GetInventoriesByItemID(id uint) ([]models.Inventory, error) {
+	return repositories.GetInventories("item_id = ?", id)
+}
+
+func GetCurrentInventoriesByItemID(id uint) ([]models.Inventory, error) {
+	inventories, err := GetInventoriesByItemID(id)
+	if err != nil {
+		return nil, err
+	}
+	out_inv := []models.Inventory{}
+	for _, inv := range inventories {
+		c_inv, err := GetCurrentInventoryByID(inv.ID)
+		if err != nil {
+			return nil, err
+		}
+		out_inv = append(out_inv, c_inv)
+	}
+	return out_inv, nil
+}

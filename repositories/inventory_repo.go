@@ -44,7 +44,7 @@ func GetCurrentUnitInventory(id uint) (uint, error) {
 	}
 	total_unit := inventory.Unit
 	var total uint
-	db := database.DB.Table("inventories").Select("sum(unit) as total").Where("prev_inventory_id = ? AND unit = ?", id, inventory.Unit).Preload(clause.Associations).Find(&total)
+	db := database.DB.Table("inventories").Select("sum(unit) as total").Where("prev_inventory_id = ? AND metric like ?", id, inventory.Item.Metric).Preload(clause.Associations).Find(&total)
 	if db.Error != nil {
 		return 0, db.Error
 	}

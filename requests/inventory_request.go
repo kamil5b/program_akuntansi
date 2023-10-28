@@ -26,7 +26,11 @@ func InventoryOpenItem(c *fiber.Ctx) error { //POST
 	}
 
 	if err := AuthUser(c, "AUTH_INVENTORY_OPEN"); err != nil {
-		return err
+		c.Status(403)
+		return c.JSON(fiber.Map{
+			"status":  403,
+			"message": err,
+		})
 	}
 	dataint := utilities.MapStringToInt(data)
 	id, err := controllers.InventoryOpenItem(uint(dataint["id"]), uint(dataint["open_item"]))
@@ -56,7 +60,11 @@ func GetInventoryByID(c *fiber.Ctx) error { //GET
 	*/
 
 	if err := AuthUser(c, "AUTH_GET_INVENTORY_ID"); err != nil {
-		return err
+		c.Status(403)
+		return c.JSON(fiber.Map{
+			"status":  403,
+			"message": err,
+		})
 	}
 
 	id := c.QueryInt("id", 0)
@@ -93,7 +101,11 @@ func GetAllInventory(c *fiber.Ctx) error { //GET
 	*/
 
 	if err := AuthUser(c, "AUTH_GET_ALL_INVENTORY"); err != nil {
-		return err
+		c.Status(403)
+		return c.JSON(fiber.Map{
+			"status":  403,
+			"message": err,
+		})
 	}
 
 	inventories, err := controllers.GetAllInventories()
@@ -116,7 +128,11 @@ func GetAllInventory(c *fiber.Ctx) error { //GET
 func GetCurrentInventoryByID(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_CURRENT_INVENTORY_ID"); err != nil {
-		return err
+		c.Status(403)
+		return c.JSON(fiber.Map{
+			"status":  403,
+			"message": err,
+		})
 	}
 
 	id := c.QueryInt("id", 0)

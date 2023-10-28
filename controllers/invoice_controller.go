@@ -1,11 +1,65 @@
 package controllers
 
 import (
+	"errors"
 	"program_akuntansi/models"
 	"program_akuntansi/repositories"
 )
 
 // ===== CREATE INVOICE =====
+
+func CreateInvoice(form models.InvoiceForm) (uint, error) {
+	var total_transaction uint = 0
+	var id uint = 0
+	var err error = nil
+	for _, trans := range form.Transactions {
+		total_transaction = total_transaction + trans.TotalPrice - trans.Discount
+	}
+	if form.InvoiceType == "DEBIT" {
+		di := models.DebitInvoice{
+			ClientID: form.ClientID,
+			Debt:     total_transaction,
+		}
+		id, err = repositories.CreateDebitInvoice(di)
+	} else if form.InvoiceType == "CREDIT" {
+		ci := models.CreditInvoice{
+			InvoiceCreditID: form.ID,
+			StoreID:         form.ClientID,
+			Debt:            total_transaction,
+		}
+		id, err = repositories.CreateCreditInvoice(ci)
+	} else {
+		return 0, errors.New("invoice type invalid")
+	}
+	if err != nil {
+		return id, err
+	}
+	for _, ft := range form.Transactions {
+		inve := models.Inventory{
+			ItemID:      ft.ItemID,
+			Unit:        ft.Unit,
+			Transaction: form.InvoiceType,
+		}
+		inv_type := ""
+		if form.InvoiceType == "CREDIT" {
+			inve.PrevInventoryID = 0
+			inv_type = "credit_invoice"
+		} //BUAT ELSE IF DEBIT
+
+		trans := models.Transaction{
+			Inventory:   inve,
+			InvoiceID:   id,
+			InvoiceType: inv_type,
+			TotalPrice:  ft.TotalPrice,
+			Discount:    ft.Discount,
+		}
+		_, err := repositories.CreateTransaction(trans)
+		if err != nil {
+			return id, err
+		}
+	}
+	return id, nil
+}
 
 // CREATE DEBIT INVOICE
 func DebitInvoiceCreate(debit_invoice models.DebitInvoice) (uint, error) {
@@ -26,6 +80,45 @@ func PayTransaction(invoice models.Invoice, PIC models.User, payment_type string
 		return 0, err
 	}
 	return repositories.CreateInvoiceHistory(invoice_history)
+}
+
+func PayTransaction2(id_inv uint, inv_type string, pic_id uint, payment_type string, payment_id uint, nominal uint) (uint, error) {
+	var invoice models.Invoice
+	if inv_type == "DEBIT" {
+		inv, err := GetDebitInvoiceByID(id_inv)
+		if err != nil {
+			return 0, err
+		}
+		invoice = inv
+	} else if inv_type == "CREDIT" {
+		inv, err := GetCreditInvoiceByID(id_inv)
+		if err != nil {
+			return 0, err
+		}
+		invoice = inv
+	} else {
+		return 0, errors.New("invalid type")
+	}
+	PIC, err := GetUserByID(pic_id)
+	if err != nil {
+		return 0, err
+	}
+	invoice_history, err := invoice.PayTransaction(PIC, payment_type, payment_id, nominal)
+	if err != nil {
+		return 0, err
+	}
+	return repositories.CreateInvoiceHistory(invoice_history)
+}
+
+func PayTransactionFromHistory(iv models.InvoiceHistory) (uint, error) {
+	return PayTransaction2(
+		iv.InvoiceID,
+		iv.InvoiceType,
+		iv.PersonInChargeID,
+		iv.PaymentType,
+		iv.PaymentID,
+		iv.Payment,
+	)
 }
 
 // PAY DEBIT TRANSACTION

@@ -16,7 +16,7 @@ type Invoice interface {
 }
 
 type InvoiceForm struct {
-	ID           uint   `json:"id"`
+	ID           string `json:"id"`
 	InvoiceType  string `json:"invoice_type"`
 	ClientID     uint   `json:"client_id"`
 	Transactions []struct {

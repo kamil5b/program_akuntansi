@@ -30,7 +30,11 @@ func ItemCreate(c *fiber.Ctx) error { //POST
 	}
 
 	if err := AuthUser(c, "AUTH_ITEM_CREATE"); err != nil {
-		return err
+		c.Status(403)
+		return c.JSON(fiber.Map{
+			"status":  403,
+			"message": err,
+		})
 	}
 
 	id, err := controllers.ItemCreate(data)
@@ -73,7 +77,11 @@ func ItemUpdate(c *fiber.Ctx) error { //POST
 	}
 
 	if err := AuthUser(c, "AUTH_ITEM_UPDATE"); err != nil {
-		return err
+		c.Status(403)
+		return c.JSON(fiber.Map{
+			"status":  403,
+			"message": err,
+		})
 	}
 
 	err := controllers.ItemIDUpdate(data.ID, data)
@@ -103,7 +111,11 @@ func GetItemByID(c *fiber.Ctx) error { //GET
 	*/
 
 	if err := AuthUser(c, "AUTH_GET_ITEM_ID"); err != nil {
-		return err
+		c.Status(403)
+		return c.JSON(fiber.Map{
+			"status":  403,
+			"message": err,
+		})
 	}
 
 	id := c.QueryInt("id", 0)
@@ -140,7 +152,11 @@ func GetAllItem(c *fiber.Ctx) error { //GET
 	*/
 
 	if err := AuthUser(c, "AUTH_GET_ALL_ITEM"); err != nil {
-		return err
+		c.Status(403)
+		return c.JSON(fiber.Map{
+			"status":  403,
+			"message": err,
+		})
 	}
 
 	items, err := controllers.GetAllItems()
@@ -163,7 +179,11 @@ func GetAllItem(c *fiber.Ctx) error { //GET
 func GetItemFamilyByID(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_ITEM_FAMILY_ID"); err != nil {
-		return err
+		c.Status(403)
+		return c.JSON(fiber.Map{
+			"status":  403,
+			"message": err,
+		})
 	}
 
 	id := c.QueryInt("id", 0)

@@ -31,7 +31,7 @@ func (d DebitInvoice) GetTotalTransaction() uint {
 	return Total - total_discount
 }
 
-func (d *DebitInvoice) PayTransaction(PIC User, payment_type string, payment_id uint, nominal uint) (InvoiceHistory, error) {
+func (d DebitInvoice) PayTransaction(PIC User, payment_type string, payment_id uint, nominal uint) (InvoiceHistory, error) {
 	var Payed uint = 0
 	database.DB.Table("debit_invoices").Select("sum(payment) as payed").Where("invoice_id = ? AND invoice_type = ?", d.ID, "DEBIT").Preload(clause.Associations).Find(&Payed)
 	total_price := d.GetTotalTransaction()
