@@ -1,21 +1,19 @@
-# Referral System
+# Accountancy Service
 
-A REST API referral system in pure go
+A REST API Accountancy Service in pure go
 
 ## System Spesification
 - Programming Language Version : Go 1.21.0
 - Essential packages:
   * [Go Fiber v2](https://gofiber.io) : a Go web framework built on top of Fasthttp, the fastest HTTP engine for Go
-  * [jwt-go](https://github.com/dgrijalva/jwt-go) : a JSON Web Tokens for Go for authorization and authentication
   * [GORM](https://gorm.io/docs/) : an ORM for Go for database management
-  * [x/crypto](https://pkg.go.dev/golang.org/x/crypto) : Go Cryptography for encrypting things
 - Local package management:
   * utilities : tools to make things easier
   * models : program models, in this case only user model
   * database : connecting the program with database server
   * repositories : communicating with database, responsible for database CURD
-  * requests : responsible to processing data. Bridge between controller and repositories
-  * controllers : the API Gateway, bridging between input, request, and output
+  * controllers : responsible to processing data. Bridge between controller and repositories
+  * requests : the API Gateway, bridging between input, request, and output
   * routes : API routes to the controllers
 
 ## How to use
