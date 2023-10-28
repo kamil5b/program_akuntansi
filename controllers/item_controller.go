@@ -28,3 +28,20 @@ func GetItemByID(id uint) (models.Item, error) {
 func GetAllItems() ([]models.Item, error) {
 	return repositories.GetAllItems()
 }
+
+func GetItemFamilyByID(id uint) ([]models.Item, error) {
+	items := []models.Item{}
+	item, err := GetItemByID(id)
+	if err != nil {
+		return nil, err
+	}
+	items = append(items, item)
+	for item.SubitemID != 0 && err != nil {
+		item, err = GetItemByID(item.SubitemID)
+		items = append(items, item)
+	}
+	if err != nil {
+		return items, err
+	}
+	return items, nil
+}
