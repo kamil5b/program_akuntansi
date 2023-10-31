@@ -122,6 +122,39 @@ func InputTransaction(c *fiber.Ctx) error {
 		})
 	}
 
+	if data.InvoiceType == "DEBIT" {
+		if err := AuthUser(c, "AUTH_DEBIT_INVOICE_CREATE"); err != nil {
+			c.Status(403)
+			return c.JSON(fiber.Map{
+				"status":  403,
+				"message": err,
+			})
+		}
+	} else if data.InvoiceType == "CREDIT" {
+		if err := AuthUser(c, "AUTH_CREDIT_INVOICE_CREATE"); err != nil {
+			c.Status(403)
+			return c.JSON(fiber.Map{
+				"status":  403,
+				"message": err,
+			})
+		}
+	} else {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": "Invalid invoice type",
+		})
+	}
+
+	err := controllers.InputTransactionToInvoice(data.InvoiceID, data.InvoiceType, data.Transactions)
+	if err != nil {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": err,
+		})
+	}
+	c.Status(200)
 	return c.JSON(fiber.Map{
 		"status":  200,
 		"message": "success",

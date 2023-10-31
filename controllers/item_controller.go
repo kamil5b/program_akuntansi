@@ -25,6 +25,10 @@ func GetItemByID(id uint) (models.Item, error) {
 	return repositories.GetItem("ID = ?", id)
 }
 
+func GetItemByBarcode(barcode uint) (models.Item, error) {
+	return repositories.GetItem("barcode = ?", barcode)
+}
+
 func GetAllItems() ([]models.Item, error) {
 	return repositories.GetAllItems()
 }
@@ -35,6 +39,14 @@ func GetItemFamilyByID(id uint) ([]models.Item, error) {
 	if err != nil {
 		return nil, err
 	}
+	tmp_item := item
+	for tmp_item.ID != 0 {
+		tmp_item, _ := GetItemByID(item.SubitemID)
+		if tmp_item.ID != 0 {
+			item = tmp_item
+		}
+	}
+
 	items = append(items, item)
 	for item.SubitemID != 0 && err != nil {
 		item, err = GetItemByID(item.SubitemID)
