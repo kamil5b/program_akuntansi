@@ -14,3 +14,10 @@ type Transaction struct {
 	TotalPrice  uint      `json:"total_price"`
 	Discount    uint      `json:"discount"`
 }
+
+type TransactionForm struct {
+	ItemID     uint `json:"item_id"`
+	Unit       uint `json:"unit"`
+	TotalPrice uint `json:"total_price"`
+	Discount   uint `json:"discount"`
+}

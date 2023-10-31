@@ -10,5 +10,5 @@ type Inventory struct {
 	ItemID          uint   `json:"item_id"`
 	Item            Item   `json:"item"`
 	Unit            uint   `json:"unit"`
-	Transaction     string `json:"transaction"` // DEBIT/CREDIT
+	Transaction     string `json:"transaction"` // CREDIT = BARANG KELUAR ; DEBIT = BARANG MASUK
 }

@@ -34,31 +34,47 @@ func CreateInvoice(form models.InvoiceForm) (uint, error) {
 	if err != nil {
 		return id, err
 	}
+	var err_in error = nil
 	for _, ft := range form.Transactions {
-		inve := models.Inventory{
-			ItemID:      ft.ItemID,
-			Unit:        ft.Unit,
-			Transaction: form.InvoiceType,
-		}
-		inv_type := ""
-		if form.InvoiceType == "CREDIT" {
-			inve.PrevInventoryID = 0
-			inv_type = "credit_invoice"
-		} //BUAT ELSE IF DEBIT
 
 		trans := models.Transaction{
-			Inventory:   inve,
-			InvoiceID:   id,
-			InvoiceType: inv_type,
-			TotalPrice:  ft.TotalPrice,
-			Discount:    ft.Discount,
+			InvoiceID:  id,
+			TotalPrice: ft.TotalPrice,
+			Discount:   ft.Discount,
 		}
+
+		if form.InvoiceType == "CREDIT" {
+
+			inve := models.Inventory{
+				ItemID:          ft.ItemID,
+				Unit:            ft.Unit,
+				Transaction:     "DEBIT",
+				PrevInventoryID: 0,
+			}
+			trans.InvoiceType = "credit_invoice"
+			trans.Inventory = inve
+
+		} else if form.InvoiceType == "DEBIT" {
+			trans.InvoiceType = "debit_invoice"
+
+			inve_old, err := repositories.GetInventory("item_id = ? and transaction = ?", ft.ItemID, "DEBIT")
+			if err != nil {
+				return id, err
+			}
+			id_inve, err := InventoryOut(inve_old.ID, ft.Unit)
+			if err != nil {
+				return id, err
+			}
+			trans.InventoryID = id_inve
+
+		}
+
 		_, err := repositories.CreateTransaction(trans)
 		if err != nil {
 			return id, err
 		}
 	}
-	return id, nil
+	return id, err_in
 }
 
 // CREATE DEBIT INVOICE

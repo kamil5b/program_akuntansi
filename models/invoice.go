@@ -16,15 +16,10 @@ type Invoice interface {
 }
 
 type InvoiceForm struct {
-	ID           string `json:"id"`
-	InvoiceType  string `json:"invoice_type"`
-	ClientID     uint   `json:"client_id"`
-	Transactions []struct {
-		ItemID     uint `json:"item_id"`
-		Unit       uint `json:"unit"`
-		TotalPrice uint `json:"total_price"`
-		Discount   uint `json:"discount"`
-	} `json:"transactions"`
+	ID           string            `json:"id"`
+	InvoiceType  string            `json:"invoice_type"`
+	ClientID     uint              `json:"client_id"`
+	Transactions []TransactionForm `json:"transactions"`
 }
 
 type InvoiceHistory struct {
