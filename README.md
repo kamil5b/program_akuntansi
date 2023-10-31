@@ -13,7 +13,7 @@ A REST API Accountancy Service in pure go
   * database : connecting the program with database server
   * repositories : communicating with database, responsible for database CURD
   * controllers : responsible to processing data. Bridge between controller and repositories
-  * requests : the API Gateway, bridging between input, request, and output
+  * requests : the API Gateway, the bridge between input, controller, and output
   * routes : API routes to the controllers
 
 ## How to use
