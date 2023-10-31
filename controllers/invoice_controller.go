@@ -4,6 +4,7 @@ import (
 	"errors"
 	"program_akuntansi/models"
 	"program_akuntansi/repositories"
+	"strconv"
 )
 
 // ===== CREATE INVOICE =====
@@ -156,7 +157,7 @@ func PayTransaction2(id_inv uint, inv_type string, pic_id uint, payment_type str
 		}
 		invoice = inv
 	} else if inv_type == "CREDIT" {
-		inv, err := GetCreditInvoiceByID(id_inv)
+		inv, err := GetCreditInvoiceByID(strconv.Itoa(int(id_inv)))
 		if err != nil {
 			return 0, err
 		}
@@ -186,24 +187,6 @@ func PayTransactionFromHistory(iv models.InvoiceHistory) (uint, error) {
 	)
 }
 
-// PAY DEBIT TRANSACTION
-func PayDebitTransaction(invoice_id uint, PIC models.User, payment_type string, payment_id uint, nominal uint) (uint, error) {
-	invoice, err := GetDebitInvoiceByID(invoice_id)
-	if err != nil {
-		return 0, err
-	}
-	return PayTransaction(&invoice, PIC, payment_type, payment_id, nominal)
-}
-
-// PAY CREDIT TRANSACTION
-func PayCreditTransaction(invoice_id uint, PIC models.User, payment_type string, payment_id uint, nominal uint) (uint, error) {
-	invoice, err := GetCreditInvoiceByID(invoice_id)
-	if err != nil {
-		return 0, err
-	}
-	return PayTransaction(&invoice, PIC, payment_type, payment_id, nominal)
-}
-
 // ==== GET ======
 
 // == GET BY ID ==
@@ -218,14 +201,23 @@ func GetInvoiceHistoryByPaymentID(id uint) (models.InvoiceHistory, error) {
 	return repositories.GetInvoiceHistory("payment_id = ?", id)
 }
 
+// GET INVOICE HISTORY BY CASH
+func GetInvoiceHistoriesByCash() ([]models.InvoiceHistory, error) {
+	return repositories.GetInvoiceHistories("payment_id = ?", 0)
+}
+
 // GET DEBIT INVOICE BY ID
 func GetDebitInvoiceByID(id uint) (models.DebitInvoice, error) {
 	return repositories.GetDebitInvoice("ID = ?", id)
 }
 
 // GET CREDIT INVOICE BY ID
-func GetCreditInvoiceByID(id uint) (models.CreditInvoice, error) {
-	return repositories.GetCreditInvoice("ID = ? OR invoice_credit_id = ?", id, id)
+func GetCreditInvoiceByID(id string) (models.CreditInvoice, error) {
+	id_uint, err := strconv.Atoi(id)
+	if err != nil {
+		return repositories.GetCreditInvoice("invoice_credit_id = ?", id)
+	}
+	return repositories.GetCreditInvoice("ID = ? OR invoice_credit_id = ?", id_uint, id)
 }
 
 // == GET SOME (ARRAY) ==
@@ -238,12 +230,12 @@ func GetInvoiceHistoriesByPICID(id uint) ([]models.InvoiceHistory, error) {
 }
 
 // GET INVOICE HISTORIES BY INVOICE ID
-func GetInvoiceHistoriesByInvID(id uint) ([]models.InvoiceHistory, error) {
+func GetInvoiceHistoriesByInvoiceID(id uint) ([]models.InvoiceHistory, error) {
 	return repositories.GetInvoiceHistories("invoice_id = ?", id)
 }
 
 // GET INVOICE HISTORIES BY INVOICE ID & TYPE
-func GetInvoiceHistoriesByInvType(invType string) ([]models.InvoiceHistory, error) {
+func GetInvoiceHistoriesByInvoiceType(invType string) ([]models.InvoiceHistory, error) {
 	return repositories.GetInvoiceHistories("invoice_type = ?", invType)
 }
 

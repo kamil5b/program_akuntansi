@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"errors"
 	"program_akuntansi/controllers"
 	"program_akuntansi/models"
 
@@ -71,7 +72,22 @@ func StoreUpdate(c *fiber.Ctx) error { //POST
 		return err
 	}
 
-	err := controllers.StoreIDUpdate(data.ID, data)
+	id, err := c.ParamsInt("id", 0)
+	if err != nil {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": err,
+		})
+	}
+	if id == 0 {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": errors.New("id not valid"),
+		})
+	}
+	err = controllers.StoreIDUpdate(data.ID, data)
 	if err != nil {
 		c.Status(400)
 		return c.JSON(fiber.Map{
@@ -101,13 +117,19 @@ func GetStoreByID(c *fiber.Ctx) error { //GET
 		return err
 	}
 
-	id := c.QueryInt("id", 0)
-
+	id, err := c.ParamsInt("id", 0)
+	if err != nil {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": err,
+		})
+	}
 	if id == 0 {
 		c.Status(400)
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": "Store not found in query",
+			"message": errors.New("id not valid"),
 		})
 	}
 

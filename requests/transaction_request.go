@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"errors"
 	"program_akuntansi/controllers"
 
 	"github.com/gofiber/fiber/v2"
@@ -24,13 +25,19 @@ func GetTransactionByID(c *fiber.Ctx) error { //GET
 		})
 	}
 
-	id := c.QueryInt("id", 0)
-
+	id, err := c.ParamsInt("id", 0)
+	if err != nil {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": err,
+		})
+	}
 	if id == 0 {
 		c.Status(400)
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": "Transaction not found in query",
+			"message": errors.New("id not valid"),
 		})
 	}
 

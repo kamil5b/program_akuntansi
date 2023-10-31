@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"errors"
 	"program_akuntansi/controllers"
 	"program_akuntansi/models"
 
@@ -75,7 +76,6 @@ func ItemUpdate(c *fiber.Ctx) error { //POST
 			"message": err,
 		})
 	}
-
 	if err := AuthUser(c, "AUTH_ITEM_UPDATE"); err != nil {
 		c.Status(403)
 		return c.JSON(fiber.Map{
@@ -83,8 +83,23 @@ func ItemUpdate(c *fiber.Ctx) error { //POST
 			"message": err,
 		})
 	}
+	id, err := c.ParamsInt("id", 0)
+	if err != nil {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": err,
+		})
+	}
+	if id == 0 {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": errors.New("id not valid"),
+		})
+	}
 
-	err := controllers.ItemIDUpdate(data.ID, data)
+	err = controllers.ItemIDUpdate(uint(id), data)
 	if err != nil {
 		c.Status(400)
 		return c.JSON(fiber.Map{
@@ -106,7 +121,6 @@ func GetItemByID(c *fiber.Ctx) error { //GET
 
 	/*
 		Authorization Header
-		id : uint
 
 	*/
 
@@ -118,13 +132,19 @@ func GetItemByID(c *fiber.Ctx) error { //GET
 		})
 	}
 
-	id := c.QueryInt("id", 0)
-
+	id, err := c.ParamsInt("id", 0)
+	if err != nil {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": err,
+		})
+	}
 	if id == 0 {
 		c.Status(400)
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": "Item not found in query",
+			"message": errors.New("id not valid"),
 		})
 	}
 
@@ -186,16 +206,21 @@ func GetItemFamilyByID(c *fiber.Ctx) error { //GET
 		})
 	}
 
-	id := c.QueryInt("id", 0)
-
+	id, err := c.ParamsInt("id", 0)
+	if err != nil {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": err,
+		})
+	}
 	if id == 0 {
 		c.Status(400)
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": "Item not found in query",
+			"message": errors.New("id not valid"),
 		})
 	}
-
 	item, err := controllers.GetItemFamilyByID(uint(id))
 	if err != nil {
 		c.Status(400)

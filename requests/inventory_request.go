@@ -1,19 +1,19 @@
 package requests
 
 import (
+	"errors"
 	"program_akuntansi/controllers"
 	"program_akuntansi/utilities"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-//UPDATE
+//CREATE
 
 func InventoryOpenItem(c *fiber.Ctx) error { //POST
 	var data map[string]string
 	/*
 		Authorization Header
-		id 	: uint
 		open_item	: uint
 
 	*/
@@ -32,8 +32,24 @@ func InventoryOpenItem(c *fiber.Ctx) error { //POST
 			"message": err,
 		})
 	}
+
+	id, err := c.ParamsInt("id", 0)
+	if err != nil {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": err,
+		})
+	}
+	if id == 0 {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": errors.New("id not valid"),
+		})
+	}
 	dataint := utilities.MapStringToInt(data)
-	id, err := controllers.InventoryOpenItem(uint(dataint["id"]), uint(dataint["open_item"]))
+	inv_id, err := controllers.InventoryOpenItem(uint(id), uint(dataint["open_item"]))
 	if err != nil {
 		c.Status(400)
 		return c.JSON(fiber.Map{
@@ -46,7 +62,7 @@ func InventoryOpenItem(c *fiber.Ctx) error { //POST
 	return c.JSON(fiber.Map{
 		"status":  200,
 		"message": "success",
-		"data":    id,
+		"data":    inv_id,
 	})
 }
 
@@ -67,13 +83,19 @@ func GetInventoryByID(c *fiber.Ctx) error { //GET
 		})
 	}
 
-	id := c.QueryInt("id", 0)
-
+	id, err := c.ParamsInt("id", 0)
+	if err != nil {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": err,
+		})
+	}
 	if id == 0 {
 		c.Status(400)
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": "Inventory not found in query",
+			"message": errors.New("id not valid"),
 		})
 	}
 
@@ -135,13 +157,19 @@ func GetCurrentInventoryByID(c *fiber.Ctx) error { //GET
 		})
 	}
 
-	id := c.QueryInt("id", 0)
-
+	id, err := c.ParamsInt("id", 0)
+	if err != nil {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": err,
+		})
+	}
 	if id == 0 {
 		c.Status(400)
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": "Inventory not found in query",
+			"message": errors.New("id not valid"),
 		})
 	}
 

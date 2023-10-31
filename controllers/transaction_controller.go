@@ -4,6 +4,7 @@ import (
 	"errors"
 	"program_akuntansi/models"
 	"program_akuntansi/repositories"
+	"strconv"
 )
 
 // CREATE
@@ -38,7 +39,7 @@ func GetAllDebitInvoiceTransactions() ([]models.Transaction, error) {
 // GET CREDIT
 
 func GetTransactionsByCreditInvoiceID(id uint) ([]models.Transaction, error) {
-	credit_invoice, err := GetCreditInvoiceByID(id)
+	credit_invoice, err := GetCreditInvoiceByID(strconv.Itoa(int(id)))
 	if err != nil {
 		return nil, err
 	}

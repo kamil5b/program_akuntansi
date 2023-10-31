@@ -41,22 +41,15 @@ func RegisterUserAuth(c *fiber.Ctx) error { //POST
 	})
 }
 
-func LoginUser(c *fiber.Ctx) error { //POST
-	var auth_id uint
-	/*
-		auth_id : uint
-	*/
-	if err := c.BodyParser(&auth_id); err != nil {
-		return c.JSON(fiber.Map{
-			"message": err.Error(),
-		})
-	}
+func LoginUser(c *fiber.Ctx) error { //GET
+	headers := c.GetReqHeaders()
 
-	user, err := controllers.GetUserByAccID(auth_id)
+	user, err := controllers.AuthUser(headers["Authorization"][0], nil)
 	if err != nil {
 		c.Status(401)
 		return c.JSON(fiber.Map{
-			"message": "Username and Password Invalid",
+			"status":  401,
+			"message": err,
 		})
 	}
 
@@ -64,7 +57,7 @@ func LoginUser(c *fiber.Ctx) error { //POST
 	return c.JSON(fiber.Map{
 		"status":  200,
 		"message": "success",
-		"user":    user,
+		"content": user,
 	})
 }
 
