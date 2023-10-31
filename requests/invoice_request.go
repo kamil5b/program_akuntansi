@@ -241,6 +241,38 @@ func PayTransaction(c *fiber.Ctx) error {
 
 // Invoice History
 
+func GetAllInvoiceHistory(c *fiber.Ctx) error { //GET
+
+	/*
+		Authorization Header
+
+	*/
+
+	if err := AuthUser(c, "AUTH_GET_INVOICE_ID"); err != nil {
+		c.Status(403)
+		return c.JSON(fiber.Map{
+			"status":  403,
+			"message": err,
+		})
+	}
+
+	invoice, err := controllers.GetAllInvoiceHistories()
+	if err != nil {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": err,
+		})
+	}
+
+	c.Status(201)
+	return c.JSON(fiber.Map{
+		"status":  200,
+		"message": "success",
+		"data":    invoice,
+	})
+}
+
 func GetInvoiceHistoryByID(c *fiber.Ctx) error { //GET
 
 	/*
