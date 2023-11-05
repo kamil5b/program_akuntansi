@@ -78,5 +78,5 @@ func ParsingDate(input string) (time.Time, error) {
 		}
 		i++
 	}
-	return t, nil
+	return t, err
 }
