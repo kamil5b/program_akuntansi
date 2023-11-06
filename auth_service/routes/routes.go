@@ -1,6 +1,9 @@
 package routes
 
 import (
+	"math/rand"
+	"strconv"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -22,12 +25,13 @@ func Setup(app *fiber.App) {
 
 	//==DUMMY==
 	auth.Get("/dummy", func(c *fiber.Ctx) error {
+		tmp := rand.Intn(1000000) + 1
 		c.Status(200)
 		return c.JSON(fiber.Map{
 			"status":  200,
 			"message": "success",
 			"data": map[string]string{
-				"sub":  "28361023832",
+				"sub":  strconv.Itoa(tmp),
 				"name": "test_dummy",
 			},
 		})
