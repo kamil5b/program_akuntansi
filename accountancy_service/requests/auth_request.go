@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"errors"
 	"program_akuntansi/accountancy_service/controllers"
 	"program_akuntansi/accountancy_service/models"
 	"program_akuntansi/accountancy_service/services"
@@ -44,21 +45,6 @@ func RegisterUserAuth(c *fiber.Ctx) error { //POST
 }
 
 func LoginUser(c *fiber.Ctx) error { //GET
-	headers := c.GetReqHeaders()
-	if _, ok := headers["Authorization"]; !ok {
-		c.Status(401)
-		return c.JSON(fiber.Map{
-			"status":  401,
-			"message": "Authorization header not presented",
-		})
-	}
-	if len(headers["Authorization"]) == 0 {
-		c.Status(401)
-		return c.JSON(fiber.Map{
-			"status":  401,
-			"message": "Authorization header is null",
-		})
-	}
 	user, err := GetUserByAuth(c)
 	if err != nil {
 		c.Status(401)
@@ -78,7 +64,13 @@ func LoginUser(c *fiber.Ctx) error { //GET
 
 func GetUserByAuth(c *fiber.Ctx) (models.User, error) {
 	headers := c.GetReqHeaders()
+	if _, ok := headers["Authorization"]; !ok {
+		return models.User{}, errors.New("authorization header not presented")
 
+	}
+	if len(headers["Authorization"]) == 0 {
+		return models.User{}, errors.New("authorization header is null")
+	}
 	acc_id, err := services.AuthUser(headers["Authorization"][0])
 	if err != nil {
 		return models.User{}, err
