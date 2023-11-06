@@ -2,6 +2,7 @@ package requests
 
 import (
 	"program_akuntansi/accountancy_service/controllers"
+	"program_akuntansi/accountancy_service/models"
 	"program_akuntansi/accountancy_service/services"
 	"program_akuntansi/utilities"
 	"strings"
@@ -44,13 +45,26 @@ func RegisterUserAuth(c *fiber.Ctx) error { //POST
 
 func LoginUser(c *fiber.Ctx) error { //GET
 	headers := c.GetReqHeaders()
-
-	user, err := services.AuthUser(headers["Authorization"][0])
+	if _, ok := headers["Authorization"]; !ok {
+		c.Status(401)
+		return c.JSON(fiber.Map{
+			"status":  401,
+			"message": "Authorization header not presented",
+		})
+	}
+	if len(headers["Authorization"]) == 0 {
+		c.Status(401)
+		return c.JSON(fiber.Map{
+			"status":  401,
+			"message": "Authorization header is null",
+		})
+	}
+	user, err := GetUserByAuth(c)
 	if err != nil {
 		c.Status(401)
 		return c.JSON(fiber.Map{
 			"status":  401,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 
@@ -58,22 +72,22 @@ func LoginUser(c *fiber.Ctx) error { //GET
 	return c.JSON(fiber.Map{
 		"status":  200,
 		"message": "success",
-		"content": user,
+		"data":    user,
 	})
 }
 
-func AuthUser(c *fiber.Ctx, auth_role_env string) error {
+func GetUserByAuth(c *fiber.Ctx) (models.User, error) {
 	headers := c.GetReqHeaders()
 
 	acc_id, err := services.AuthUser(headers["Authorization"][0])
 	if err != nil {
-		c.Status(401)
-		return c.JSON(fiber.Map{
-			"status":  401,
-			"message": err,
-		})
+		return models.User{}, err
 	}
-	user, err := controllers.GetUserByAccID(uint(acc_id))
+	return controllers.GetUserByAccID(uint(acc_id))
+}
+
+func AuthUser(c *fiber.Ctx, auth_role_env string) error {
+	user, err := GetUserByAuth(c)
 	if err != nil {
 		c.Status(401)
 		return c.JSON(fiber.Map{

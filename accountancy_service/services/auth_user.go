@@ -9,8 +9,15 @@ import (
 // PROCESS
 
 func AuthUser(auth string) (int, error) {
-	auth_url := utilities.GoDotEnvVariable("AUTH_URL") //URL TO AUTH SERVICE
-	var response map[string]map[string]string
+	auth_url := "http://" + utilities.GoDotEnvVariable("AUTH_URL") + "/api/auth/user" //URL TO AUTH SERVICE
+
+	//auth_url := "http:\\\\" + utilities.GoDotEnvVariable("AUTH_URL") + "\\api\\auth\\user" //URL TO AUTH SERVICE
+	var response struct {
+		Data struct {
+			Sub string `json:"sub"`
+		} `json:"data"`
+	}
+	//fmt.Println(auth_url)
 	err := utilities.HTTPRequest(
 		"GET",
 		auth_url,
@@ -24,5 +31,5 @@ func AuthUser(auth string) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	return strconv.Atoi(response["data"]["sub"])
+	return strconv.Atoi(response.Data.Sub)
 }

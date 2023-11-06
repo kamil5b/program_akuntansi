@@ -23,8 +23,8 @@ func Setup(app *fiber.App) {
 	// auth.Post("/register", requests.RegisterUserAuth)
 	// auth.Get("/user", requests.LoginUser)
 
-	//==DUMMY==
-	auth.Get("/dummy", func(c *fiber.Ctx) error {
+	//==DUMMY== TEMPORARY
+	auth.Get("/user", func(c *fiber.Ctx) error {
 		tmp := rand.Intn(1000000) + 1
 		c.Status(200)
 		return c.JSON(fiber.Map{
