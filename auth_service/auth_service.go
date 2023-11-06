@@ -3,8 +3,6 @@ package auth_service
 import (
 	"fmt"
 
-	"program_akuntansi/auth_service/database"
-	"program_akuntansi/auth_service/models"
 	"program_akuntansi/auth_service/routes"
 
 	"github.com/gofiber/fiber/v2"
@@ -12,10 +10,10 @@ import (
 
 func SetupTemplate(server_url, db_url, user, password, protocol, db string) {
 
-	database.Connect(
-		db_url, user, password, protocol, db,
-		&models.Account{},
-	)
+	// database.Connect(
+	// 	db_url, user, password, protocol, db,
+	// 	&models.Account{},
+	// )
 	app := fiber.New()
 	/*
 		origin := utilities.GoDotEnvVariable("VIEW_URL") //ganti view url ini di .env

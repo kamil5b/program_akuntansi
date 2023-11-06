@@ -2,15 +2,13 @@ package services
 
 import (
 	"net/http"
-	"program_akuntansi/accountancy_service/controllers"
-	"program_akuntansi/accountancy_service/models"
 	"program_akuntansi/utilities"
 	"strconv"
 )
 
 // PROCESS
 
-func AuthUser(auth string) (models.User, error) {
+func AuthUser(auth string) (int, error) {
 	auth_url := utilities.GoDotEnvVariable("AUTH_URL") //URL TO AUTH SERVICE
 	var response map[string]map[string]string
 	err := utilities.HTTPRequest(
@@ -24,12 +22,7 @@ func AuthUser(auth string) (models.User, error) {
 		&response,
 	)
 	if err != nil {
-		return models.User{}, err
+		return 0, err
 	}
-	acc_id, err := strconv.Atoi(response["data"]["sub"])
-
-	if err != nil {
-		return models.User{}, err
-	}
-	return controllers.GetUserByAccID(uint(acc_id))
+	return strconv.Atoi(response["data"]["sub"])
 }

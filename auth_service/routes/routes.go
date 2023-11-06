@@ -1,8 +1,6 @@
 package routes
 
 import (
-	"program_akuntansi/auth_service/requests"
-
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -19,8 +17,8 @@ func Setup(app *fiber.App) {
 
 	// ==Auth==
 	auth := api.Group("/auth")
-	auth.Post("/register", requests.RegisterUserAuth)
-	auth.Get("/user", requests.LoginUser)
+	// auth.Post("/register", requests.RegisterUserAuth)
+	// auth.Get("/user", requests.LoginUser)
 
 	//==DUMMY==
 	auth.Get("/dummy", func(c *fiber.Ctx) error {

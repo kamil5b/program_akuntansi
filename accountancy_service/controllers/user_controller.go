@@ -2,11 +2,9 @@ package controllers
 
 import (
 	"errors"
-	"net/http"
 	"program_akuntansi/accountancy_service/models"
 	"program_akuntansi/accountancy_service/repositories"
-	"program_akuntansi/utilities"
-	"strconv"
+	"program_akuntansi/accountancy_service/services"
 )
 
 // CREATE
@@ -31,23 +29,8 @@ func RegisterExistingUserAcc(acc_id, id uint) error {
 	return err
 }
 
-func RegisterAuthUser(auth, name, role string, body any) error {
-	auth_url := utilities.GoDotEnvVariable("AUTH_URL") //URL TO AUTH SERVICE
-	var response map[string]string
-	err := utilities.HTTPRequest(
-		"POST",
-		auth_url,
-		http.Header{
-			"Authorization": {auth},
-			"Content-Type":  {"application/json"},
-		},
-		body,
-		&response,
-	)
-	if err != nil {
-		return err
-	}
-	acc_id, err := strconv.Atoi(response["sub"])
+func RegisterAuthUser(auth, name, role string) error {
+	acc_id, err := services.AuthUser(auth)
 
 	if err != nil {
 		return err

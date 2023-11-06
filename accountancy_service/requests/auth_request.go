@@ -2,7 +2,7 @@ package requests
 
 import (
 	"program_akuntansi/accountancy_service/controllers"
-	services "program_akuntansi/accountancy_service/service"
+	"program_akuntansi/accountancy_service/services"
 	"program_akuntansi/utilities"
 	"strings"
 
@@ -27,7 +27,7 @@ func RegisterUserAuth(c *fiber.Ctx) error { //POST
 
 	headers := c.GetReqHeaders()
 
-	if err := controllers.RegisterAuthUser(headers["Authorization"][0], data["name"], data["role"], data); err != nil {
+	if err := controllers.RegisterAuthUser(headers["Authorization"][0], data["name"], data["role"]); err != nil {
 		c.Status(400)
 		return c.JSON(fiber.Map{
 			"status":  401,
@@ -65,7 +65,7 @@ func LoginUser(c *fiber.Ctx) error { //GET
 func AuthUser(c *fiber.Ctx, auth_role_env string) error {
 	headers := c.GetReqHeaders()
 
-	user, err := services.AuthUser(headers["Authorization"][0])
+	acc_id, err := services.AuthUser(headers["Authorization"][0])
 	if err != nil {
 		c.Status(401)
 		return c.JSON(fiber.Map{
@@ -73,7 +73,14 @@ func AuthUser(c *fiber.Ctx, auth_role_env string) error {
 			"message": err,
 		})
 	}
-
+	user, err := controllers.GetUserByAccID(uint(acc_id))
+	if err != nil {
+		c.Status(401)
+		return c.JSON(fiber.Map{
+			"status":  401,
+			"message": err,
+		})
+	}
 	auth_roles := utilities.GoDotEnvVariable(auth_role_env)
 	arr_roles := strings.Split(auth_roles, ",")
 
