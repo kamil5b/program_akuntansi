@@ -1,8 +1,7 @@
 package routes
 
 import (
-	"math/rand"
-	"strconv"
+	"log/slog"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -25,13 +24,30 @@ func Setup(app *fiber.App) {
 
 	//==DUMMY== TEMPORARY
 	auth.Get("/user", func(c *fiber.Ctx) error {
-		tmp := rand.Intn(1000000) + 1
+		headers := c.GetReqHeaders()
+		if _, ok := headers["Authorization"]; !ok {
+			c.Status(401)
+			slog.Error("authorization header not presented")
+			return c.JSON(fiber.Map{
+				"status":  401,
+				"message": "authorization header not presented",
+			})
+		}
+		if len(headers["Authorization"]) == 0 {
+			c.Status(401)
+			slog.Error("authorization header not presented")
+			return c.JSON(fiber.Map{
+				"status":  401,
+				"message": "authorization header not presented",
+			})
+		}
+		tmp := headers["Authorization"][0][9:]
 		c.Status(200)
 		return c.JSON(fiber.Map{
 			"status":  200,
 			"message": "success",
 			"data": map[string]string{
-				"sub":  strconv.Itoa(tmp),
+				"sub":  tmp,
 				"name": "test_dummy",
 			},
 		})

@@ -4,7 +4,6 @@ import (
 	"errors"
 	"program_akuntansi/accountancy_service/models"
 	"program_akuntansi/accountancy_service/repositories"
-	"program_akuntansi/accountancy_service/services"
 )
 
 // CREATE
@@ -29,12 +28,7 @@ func RegisterExistingUserAcc(acc_id, id uint) error {
 	return err
 }
 
-func RegisterAuthUser(auth, name, role string) error {
-	acc_id, err := services.AuthUser(auth)
-
-	if err != nil {
-		return err
-	}
+func RegisterAuthUser(acc_id int, name, role string) error {
 	acc := models.Account{
 		AuthID: uint(acc_id),
 		User: models.User{

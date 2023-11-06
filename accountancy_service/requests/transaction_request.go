@@ -2,6 +2,7 @@ package requests
 
 import (
 	"errors"
+	"log/slog"
 	"program_akuntansi/accountancy_service/controllers"
 
 	"github.com/gofiber/fiber/v2"
@@ -19,22 +20,25 @@ func GetTransactionByID(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_TRANSACTION_ID"); err != nil {
 		c.Status(403)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  403,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
 		c.Status(400)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 	if id == 0 {
 		c.Status(400)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": errors.New("id not valid"),
@@ -44,9 +48,10 @@ func GetTransactionByID(c *fiber.Ctx) error { //GET
 	transaction, err := controllers.GetTransactionByID(uint(id))
 	if err != nil {
 		c.Status(400)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 
@@ -70,25 +75,28 @@ func GetTransactionByInvoiceID(c *fiber.Ctx) error { //GET
 	*/
 	if err := c.BodyParser(&data); err != nil {
 		c.Status(401)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  401,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 	if err := AuthUser(c, "AUTH_GET_TRANSACTION_INVOICE"); err != nil {
 		c.Status(403)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  403,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 
 	transactions, err := controllers.GetTransactionByInvoiceID(data.InvoiceID, data.InvoiceType)
 	if err != nil {
 		c.Status(400)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 
@@ -108,18 +116,20 @@ func GetAllTransaction(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_ALL_TRANSACTION"); err != nil {
 		c.Status(403)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  403,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 
 	transactions, err := controllers.GetAllTransactions()
 	if err != nil {
 		c.Status(400)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 

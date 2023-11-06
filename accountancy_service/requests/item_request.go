@@ -2,6 +2,7 @@ package requests
 
 import (
 	"errors"
+	"log/slog"
 	"program_akuntansi/accountancy_service/controllers"
 	"program_akuntansi/accountancy_service/models"
 
@@ -24,26 +25,29 @@ func ItemCreate(c *fiber.Ctx) error { //POST
 	*/
 	if err := c.BodyParser(&data); err != nil {
 		c.Status(401)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  401,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 
 	if err := AuthUser(c, "AUTH_ITEM_CREATE"); err != nil {
 		c.Status(403)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  403,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 
 	id, err := controllers.ItemCreate(data)
 	if err != nil {
 		c.Status(400)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  401,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 
@@ -71,28 +75,32 @@ func ItemUpdate(c *fiber.Ctx) error { //POST
 	*/
 	if err := c.BodyParser(&data); err != nil {
 		c.Status(400)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 	if err := AuthUser(c, "AUTH_ITEM_UPDATE"); err != nil {
 		c.Status(403)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  403,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
 		c.Status(400)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 	if id == 0 {
 		c.Status(400)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": errors.New("id not valid"),
@@ -102,9 +110,10 @@ func ItemUpdate(c *fiber.Ctx) error { //POST
 	err = controllers.ItemIDUpdate(uint(id), data)
 	if err != nil {
 		c.Status(400)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 
@@ -126,22 +135,25 @@ func GetItemByID(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_ITEM_ID"); err != nil {
 		c.Status(403)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  403,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
 		c.Status(400)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 	if id == 0 {
 		c.Status(400)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": errors.New("id not valid"),
@@ -151,9 +163,10 @@ func GetItemByID(c *fiber.Ctx) error { //GET
 	item, err := controllers.GetItemByID(uint(id))
 	if err != nil {
 		c.Status(400)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 
@@ -173,18 +186,20 @@ func GetAllItem(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_ALL_ITEM"); err != nil {
 		c.Status(403)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  403,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 
 	items, err := controllers.GetAllItems()
 	if err != nil {
 		c.Status(400)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 
@@ -200,22 +215,25 @@ func GetItemFamilyByID(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_ITEM_FAMILY_ID"); err != nil {
 		c.Status(403)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  403,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
 		c.Status(400)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 	if id == 0 {
 		c.Status(400)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": errors.New("id not valid"),
@@ -224,9 +242,10 @@ func GetItemFamilyByID(c *fiber.Ctx) error { //GET
 	item, err := controllers.GetItemFamilyByID(uint(id))
 	if err != nil {
 		c.Status(400)
+		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 
