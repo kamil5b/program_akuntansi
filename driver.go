@@ -10,7 +10,7 @@ func main() {
 	var (
 
 		//server_url  = utilities.GoDotEnvVariable("SERVER_PORT")
-		acc_port  = utilities.GoDotEnvVariable("ACCOUNTANCY_PORT")
+		acc_port  = utilities.GoDotEnvVariable("PORT")
 		auth_port = utilities.GoDotEnvVariable("AUTH_PORT")
 		db_url    = utilities.GoDotEnvVariable("DATABASE_URL")
 		user      = utilities.GoDotEnvVariable("DATABASE_USER")
