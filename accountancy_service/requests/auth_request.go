@@ -106,12 +106,7 @@ func GetUserByAuth(c *fiber.Ctx) (models.User, error) {
 func AuthUser(c *fiber.Ctx, auth_role_env string) error {
 	user, err := GetUserByAuth(c)
 	if err != nil {
-		c.Status(401)
-		slog.Error(err.Error())
-		return c.JSON(fiber.Map{
-			"status":  401,
-			"message": err.Error(),
-		})
+		return err
 	}
 	auth_roles := utilities.GoDotEnvVariable(auth_role_env)
 	arr_roles := strings.Split(auth_roles, ",")
@@ -121,12 +116,7 @@ func AuthUser(c *fiber.Ctx, auth_role_env string) error {
 	})
 
 	if !found && user.Role != "admin" {
-		c.Status(403)
-		slog.Error(err.Error())
-		return c.JSON(fiber.Map{
-			"status":  403,
-			"message": "Forbidden",
-		})
+		return errors.New("forbidden")
 	}
 	return nil
 }

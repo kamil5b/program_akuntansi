@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"log/slog"
 
 	"github.com/gofiber/fiber/v2"
@@ -41,6 +42,7 @@ func Setup(app *fiber.App) {
 				"message": "authorization header not presented",
 			})
 		}
+		fmt.Println(headers["Authorization"][0])
 		tmp := headers["Authorization"][0][9:]
 		c.Status(200)
 		return c.JSON(fiber.Map{

@@ -8,6 +8,7 @@ import (
 	"program_akuntansi/accountancy_service/routes"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func SetupTemplate(server_url, db_url, user, password, protocol, db string) {
@@ -25,14 +26,9 @@ func SetupTemplate(server_url, db_url, user, password, protocol, db string) {
 		&models.Transaction{},
 	)
 	app := fiber.New()
-	/*
-		origin := utilities.GoDotEnvVariable("VIEW_URL") //ganti view url ini di .env
-		app.Use(cors.New(cors.Config{
-			AllowCredentials: true,
-			AllowOrigins:     []string{origin},
-			AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
-		}))
-	*/
+
+	app.Use(cors.New())
+
 	routes.Setup(app)
 
 	err := app.Listen(server_url)
