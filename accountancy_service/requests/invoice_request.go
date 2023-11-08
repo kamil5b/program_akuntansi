@@ -1,7 +1,6 @@
 package requests
 
 import (
-	"errors"
 	"log/slog"
 	"program_akuntansi/accountancy_service/controllers"
 	"program_akuntansi/accountancy_service/models"
@@ -167,10 +166,10 @@ func InputTransaction(c *fiber.Ctx) error {
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error(err.Error())
+		slog.Error("id not valid")
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": errors.New("id not valid"),
+			"message": "id not valid",
 		})
 	}
 	err = controllers.InputTransactionToInvoice(uint(id), data.InvoiceType, data.Transactions)
@@ -320,10 +319,10 @@ func GetInvoiceHistoryByID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error(err.Error())
+		slog.Error("id not valid")
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": errors.New("id not valid"),
+			"message": "id not valid",
 		})
 	}
 
@@ -434,10 +433,10 @@ func GetInvoiceHistoriesByPICID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error(err.Error())
+		slog.Error("id not valid")
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": errors.New("id not valid"),
+			"message": "id not valid",
 		})
 	}
 
@@ -486,10 +485,10 @@ func GetInvoiceHistoriesByInvoiceID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error(err.Error())
+		slog.Error("id not valid")
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": errors.New("id not valid"),
+			"message": "id not valid",
 		})
 	}
 
@@ -511,12 +510,22 @@ func GetInvoiceHistoriesByInvoiceID(c *fiber.Ctx) error { //GET
 	})
 }
 
-func GetInvoiceHistoriesDebit(c *fiber.Ctx) error { //GET
+func GetInvoiceHistoriesByInvoiceType(c *fiber.Ctx) error { //GET
 
 	/*
 		Authorization Header
 
 	*/
+
+	inv_type := strings.ToUpper(c.Params("inv_type"))
+	if inv_type != "DEBIT" && inv_type != "CREDIT" {
+		c.Status(400)
+		slog.Error("invalid invoice type")
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": "invalid invoice type",
+		})
+	}
 
 	if err := AuthUser(c, "AUTH_GET_HISTORY_TYPE"); err != nil {
 		c.Status(403)
@@ -527,7 +536,7 @@ func GetInvoiceHistoriesDebit(c *fiber.Ctx) error { //GET
 		})
 	}
 
-	invoice, err := controllers.GetInvoiceHistoriesByInvoiceType("DEBIT")
+	invoice, err := controllers.GetInvoiceHistoriesByInvoiceType(inv_type)
 	if err != nil {
 		c.Status(400)
 		slog.Error(err.Error())
@@ -543,57 +552,15 @@ func GetInvoiceHistoriesDebit(c *fiber.Ctx) error { //GET
 		"message": "success",
 		"data":    invoice,
 	})
+
 }
 
-func GetInvoiceHistoriesCredit(c *fiber.Ctx) error { //GET
+func GetInvoiceHistoriesByInvoiceTypeID(c *fiber.Ctx) error { //GET
 
 	/*
 		Authorization Header
 
 	*/
-
-	if err := AuthUser(c, "AUTH_GET_HISTORY_TYPE"); err != nil {
-		c.Status(403)
-		slog.Error(err.Error())
-		return c.JSON(fiber.Map{
-			"status":  403,
-			"message": err.Error(),
-		})
-	}
-
-	invoice, err := controllers.GetInvoiceHistoriesByInvoiceType("CREDIT")
-	if err != nil {
-		c.Status(400)
-		slog.Error(err.Error())
-		return c.JSON(fiber.Map{
-			"status":  400,
-			"message": err.Error(),
-		})
-	}
-
-	c.Status(201)
-	return c.JSON(fiber.Map{
-		"status":  200,
-		"message": "success",
-		"data":    invoice,
-	})
-}
-
-func GetInvoiceHistoriesByInvoiceIDType(c *fiber.Ctx) error { //GET
-
-	/*
-		Authorization Header
-
-	*/
-
-	if err := AuthUser(c, "AUTH_GET_INVOICE_PIC_ID"); err != nil {
-		c.Status(403)
-		slog.Error(err.Error())
-		return c.JSON(fiber.Map{
-			"status":  403,
-			"message": err.Error(),
-		})
-	}
 
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
@@ -604,21 +571,31 @@ func GetInvoiceHistoriesByInvoiceIDType(c *fiber.Ctx) error { //GET
 			"message": err.Error(),
 		})
 	}
-	if id == 0 {
-		c.Status(400)
-		slog.Error(err.Error())
-		return c.JSON(fiber.Map{
-			"status":  400,
-			"message": errors.New("id not valid"),
-		})
-	}
+
 	inv_type := strings.ToUpper(c.Params("inv_type"))
 	if inv_type != "DEBIT" && inv_type != "CREDIT" {
 		c.Status(400)
-		slog.Error(err.Error())
+		slog.Error("invalid invoice type")
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "invalid invoice type",
+		})
+	}
+	if id == 0 {
+		c.Status(400)
+		slog.Error("id not valid")
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": "id not valid",
+		})
+	}
+
+	if err := AuthUser(c, "AUTH_GET_INVOICE_PIC_ID"); err != nil {
+		c.Status(403)
+		slog.Error(err.Error())
+		return c.JSON(fiber.Map{
+			"status":  403,
+			"message": err.Error(),
 		})
 	}
 
@@ -632,7 +609,7 @@ func GetInvoiceHistoriesByInvoiceIDType(c *fiber.Ctx) error { //GET
 		})
 	}
 
-	c.Status(201)
+	c.Status(200)
 	return c.JSON(fiber.Map{
 		"status":  200,
 		"message": "success",
@@ -669,10 +646,10 @@ func GetDebitInvoiceByID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error(err.Error())
+		slog.Error("id not valid")
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": errors.New("id not valid"),
+			"message": "id not valid",
 		})
 	}
 
@@ -721,10 +698,10 @@ func GetDebitInvoiceByClientID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error(err.Error())
+		slog.Error("id not valid")
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": errors.New("id not valid"),
+			"message": "id not valid",
 		})
 	}
 
@@ -845,10 +822,10 @@ func GetCreditInvoiceByClientID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error(err.Error())
+		slog.Error("id not valid")
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": errors.New("id not valid"),
+			"message": "id not valid",
 		})
 	}
 

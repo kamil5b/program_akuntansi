@@ -1,31 +1,20 @@
 package requests
 
 import (
-	"errors"
 	"log/slog"
 	"program_akuntansi/accountancy_service/controllers"
-	"program_akuntansi/utilities"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 //CREATE
 
-func InventoryOpenItem(c *fiber.Ctx) error { //POST
-	var data map[string]string
+func InventoryOpenItem(c *fiber.Ctx) error { //GET
 	/*
 		Authorization Header
 		open_item	: uint
 
 	*/
-	if err := c.BodyParser(&data); err != nil {
-		c.Status(400)
-		slog.Error(err.Error())
-		return c.JSON(fiber.Map{
-			"status":  400,
-			"message": err.Error(),
-		})
-	}
 
 	if err := AuthUser(c, "AUTH_INVENTORY_OPEN"); err != nil {
 		c.Status(403)
@@ -47,14 +36,32 @@ func InventoryOpenItem(c *fiber.Ctx) error { //POST
 	}
 	if id == 0 {
 		c.Status(400)
+		slog.Error("id not valid")
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": "id not valid",
+		})
+	}
+
+	unit, err := c.ParamsInt("unit", 0)
+	if err != nil {
+		c.Status(400)
 		slog.Error(err.Error())
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": errors.New("id not valid"),
+			"message": err.Error(),
 		})
 	}
-	dataint := utilities.MapStringToInt(data)
-	inv_id, err := controllers.InventoryOpenItem(uint(id), uint(dataint["open_item"]))
+	if unit == 0 {
+		c.Status(200)
+		slog.Error("no inventory opened")
+		return c.JSON(fiber.Map{
+			"status":  200,
+			"message": "no inventory opened",
+		})
+	}
+
+	inv_id, err := controllers.InventoryOpenItem(uint(id), uint(unit))
 	if err != nil {
 		c.Status(400)
 		slog.Error(err.Error())
@@ -101,10 +108,10 @@ func GetInventoryByID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error(err.Error())
+		slog.Error("id not valid")
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": errors.New("id not valid"),
+			"message": "id not valid",
 		})
 	}
 
@@ -181,10 +188,10 @@ func GetCurrentInventoryByID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error(err.Error())
+		slog.Error("id not valid")
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": errors.New("id not valid"),
+			"message": "id not valid",
 		})
 	}
 

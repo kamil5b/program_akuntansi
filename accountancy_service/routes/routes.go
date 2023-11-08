@@ -43,7 +43,7 @@ func Setup(app *fiber.App) {
 	inventory := api.Group("/inventory")
 	inventory.Get("/", requests.GetAllInventory)
 	inventory.Get("/all", requests.GetAllInventory)
-	inventory.Post("/open/:id", requests.InventoryOpenItem)
+	inventory.Get("/open/:id/:unit", requests.InventoryOpenItem)
 	inventory.Get("/:id", requests.GetInventoryByID)
 	inventory.Get("/current/:id", requests.GetCurrentInventoryByID)
 
@@ -52,7 +52,7 @@ func Setup(app *fiber.App) {
 	transaction.Get("/", requests.GetAllTransaction)
 	transaction.Get("/all", requests.GetAllTransaction)
 	transaction.Get("/:id", requests.GetTransactionByID)
-	transaction.Get("/invoice/:id", requests.GetTransactionByInvoiceID)
+	transaction.Get("/invoice/:inv_type/:id", requests.GetTransactionByInvoiceID)
 
 	// ==Invoice==
 	invoice := api.Group("/invoice")
@@ -63,13 +63,12 @@ func Setup(app *fiber.App) {
 	history := invoice.Group("/history")
 	history.Get("/", requests.GetAllInvoiceHistory)
 	history.Get("/all", requests.GetAllInvoiceHistory)
-	history.Get("/:id", requests.GetInventoryByID)
+	history.Get("/all/:inv_type", requests.GetInvoiceHistoriesByInvoiceType)
+	history.Get("/:id", requests.GetInvoiceHistoryByID)
 	history.Get("/payment/:id", requests.GetInvoiceHistoryByPaymentID)
 	history.Get("/user/:id", requests.GetInvoiceHistoriesByPICID)
 	history.Get("/invoice/:id", requests.GetInvoiceHistoriesByInvoiceID)
-	history.Get("/debit", requests.GetInvoiceHistoriesDebit)
-	history.Get("/credit", requests.GetInvoiceHistoriesCredit)
-	history.Get("/:inv_type/:id", requests.GetInvoiceHistoriesByInvoiceIDType)
+	history.Get("/:inv_type/:id", requests.GetInvoiceHistoriesByInvoiceTypeID)
 	// Debit Invoice
 	debit := invoice.Group("/debit")
 	debit.Get("/", requests.GetAllDebitInvoice)

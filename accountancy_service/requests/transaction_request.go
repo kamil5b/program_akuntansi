@@ -1,9 +1,9 @@
 package requests
 
 import (
-	"errors"
 	"log/slog"
 	"program_akuntansi/accountancy_service/controllers"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -38,10 +38,10 @@ func GetTransactionByID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error(err.Error())
+		slog.Error("id not valid")
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": errors.New("id not valid"),
+			"message": "id not valid",
 		})
 	}
 
@@ -64,23 +64,13 @@ func GetTransactionByID(c *fiber.Ctx) error { //GET
 }
 
 func GetTransactionByInvoiceID(c *fiber.Ctx) error { //GET
-	var data struct {
-		InvoiceID   uint   `json:"invoice_id"`
-		InvoiceType string `json:"invoice_type"`
-	}
+
 	/*
 		Authorization Header
 		invoice_id : 	uint
 		invoice_type :  string
 	*/
-	if err := c.BodyParser(&data); err != nil {
-		c.Status(401)
-		slog.Error(err.Error())
-		return c.JSON(fiber.Map{
-			"status":  401,
-			"message": err.Error(),
-		})
-	}
+
 	if err := AuthUser(c, "AUTH_GET_TRANSACTION_INVOICE"); err != nil {
 		c.Status(403)
 		slog.Error(err.Error())
@@ -89,8 +79,34 @@ func GetTransactionByInvoiceID(c *fiber.Ctx) error { //GET
 			"message": err.Error(),
 		})
 	}
+	id, err := c.ParamsInt("id", 0)
+	if err != nil {
+		c.Status(400)
+		slog.Error(err.Error())
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": err.Error(),
+		})
+	}
 
-	transactions, err := controllers.GetTransactionByInvoiceID(data.InvoiceID, data.InvoiceType)
+	inv_type := strings.ToUpper(c.Params("inv_type"))
+	if inv_type != "DEBIT" && inv_type != "CREDIT" {
+		c.Status(400)
+		slog.Error("invalid invoice type")
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": "invalid invoice type",
+		})
+	}
+	if id == 0 {
+		c.Status(400)
+		slog.Error("id not valid")
+		return c.JSON(fiber.Map{
+			"status":  400,
+			"message": "id not valid",
+		})
+	}
+	transactions, err := controllers.GetTransactionByInvoiceID(uint(id), inv_type)
 	if err != nil {
 		c.Status(400)
 		slog.Error(err.Error())

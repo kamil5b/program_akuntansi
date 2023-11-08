@@ -1,7 +1,6 @@
 package requests
 
 import (
-	"errors"
 	"log/slog"
 	"program_akuntansi/accountancy_service/controllers"
 	"program_akuntansi/accountancy_service/models"
@@ -100,10 +99,10 @@ func ItemUpdate(c *fiber.Ctx) error { //POST
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error(err.Error())
+		slog.Error("id not valid")
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": errors.New("id not valid"),
+			"message": "id not valid",
 		})
 	}
 
@@ -153,10 +152,10 @@ func GetItemByID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error(err.Error())
+		slog.Error("id not valid")
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": errors.New("id not valid"),
+			"message": "id not valid",
 		})
 	}
 
@@ -233,10 +232,10 @@ func GetItemFamilyByID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error(err.Error())
+		slog.Error("id not valid")
 		return c.JSON(fiber.Map{
 			"status":  400,
-			"message": errors.New("id not valid"),
+			"message": "id not valid",
 		})
 	}
 	item, err := controllers.GetItemFamilyByID(uint(id))

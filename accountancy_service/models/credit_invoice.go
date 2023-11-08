@@ -13,7 +13,7 @@ type CreditInvoice struct { //PEMBELIAN
 }
 
 func (c CreditInvoice) GetTransactions() ([]Transaction, error) {
-	return getTransactions(c.ID, "CREDIT")
+	return getTransactions(c.ID, "credit_invoices")
 }
 
 func (credit_invoice CreditInvoice) GetTotalTransaction() uint {

@@ -12,7 +12,7 @@ type DebitInvoice struct { //PENJUALAN
 }
 
 func (d DebitInvoice) GetTransactions() ([]Transaction, error) {
-	return getTransactions(d.ID, "DEBIT")
+	return getTransactions(d.ID, "debit_invoices")
 }
 
 func (d DebitInvoice) GetTotalTransaction() uint {
