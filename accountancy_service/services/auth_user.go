@@ -9,7 +9,7 @@ import (
 // PROCESS
 
 func AuthUser(auth string) (int, error) {
-	auth_url := "http://" + utilities.GoDotEnvVariable("SERVER_URL") + ":" + utilities.GoDotEnvVariable("AUTH_PORT") + "/api/auth/user" //URL TO AUTH SERVICE
+	auth_url := "http://" + utilities.GoDotEnvVariable("AUTH_URL") + "/api/auth/user" //URL TO AUTH SERVICE
 
 	var response struct {
 		Data struct {
