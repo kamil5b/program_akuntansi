@@ -52,11 +52,11 @@ func CreateInvoice(form models.InvoiceForm) (uint, error) {
 				Transaction:     "DEBIT",
 				PrevInventoryID: 0,
 			}
-			trans.InvoiceType = "credit_invoice"
+			trans.InvoiceType = "credit_invoices"
 			trans.Inventory = inve
 
 		} else if form.InvoiceType == "DEBIT" {
-			trans.InvoiceType = "debit_invoice"
+			trans.InvoiceType = "debit_invoices"
 
 			inve_old, err := repositories.GetInventory("item_id = ? and transaction = ?", ft.ItemID, "DEBIT")
 			if err != nil {
@@ -110,11 +110,11 @@ func InputTransactionToInvoice(id uint, invoice_type string, transactions []mode
 				Transaction:     "DEBIT",
 				PrevInventoryID: 0,
 			}
-			trans.InvoiceType = "credit_invoice"
+			trans.InvoiceType = "credit_invoices"
 			trans.Inventory = inve
 
 		} else if invoice_type == "DEBIT" {
-			trans.InvoiceType = "debit_invoice"
+			trans.InvoiceType = "debit_invoices"
 
 			inve_old, err := repositories.GetInventory("item_id = ? and transaction = ?", ft.ItemID, "DEBIT")
 			if err != nil {

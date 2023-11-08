@@ -36,7 +36,7 @@ func Setup(app *fiber.App) {
 	store.Get("/", requests.GetAllStore)
 	store.Get("/all", requests.GetAllStore)
 	store.Post("/create", requests.StoreCreate)
-	store.Post("/:id", requests.StoreUpdate)
+	store.Patch("/:id", requests.StoreUpdate)
 	store.Get("/:id", requests.GetStoreByID)
 
 	// ==Inventory==

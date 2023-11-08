@@ -3,6 +3,8 @@ package repositories
 import (
 	"program_akuntansi/accountancy_service/database"
 	"program_akuntansi/accountancy_service/models"
+
+	"gorm.io/gorm/clause"
 )
 
 //======GET======
@@ -10,28 +12,28 @@ import (
 // TO KNOW IF THE CREDIT INVOICE EXIST OR NOT
 func IsCreditInvoiceExist(query string, val ...interface{}) bool {
 	var credit_invoice models.CreditInvoice
-	database.DB.Where(query, val...).Last(&credit_invoice)
+	database.DB.Where(query, val...).Preload(clause.Associations).Last(&credit_invoice)
 	return credit_invoice.ID != 0
 }
 
 // TO GET A CREDIT INVOICE
 func GetCreditInvoice(query string, val ...interface{}) (models.CreditInvoice, error) {
 	var credit_invoice models.CreditInvoice
-	db := database.DB.Where(query, val...).Last(&credit_invoice)
+	db := database.DB.Where(query, val...).Preload(clause.Associations).Last(&credit_invoice)
 	return credit_invoice, db.Error
 }
 
 // TO GET AN ARRAY OF CREDIT INVOICES (NOT ALL BUT CAN ALL)
 func GetCreditInvoices(query string, val ...interface{}) ([]models.CreditInvoice, error) {
 	var credit_invoices []models.CreditInvoice
-	db := database.DB.Where(query, val...).Find(&credit_invoices)
+	db := database.DB.Where(query, val...).Preload(clause.Associations).Find(&credit_invoices)
 	return credit_invoices, db.Error
 }
 
 // TO GET ALL CREDIT INVOICES
 func GetAllCreditInvoices() ([]models.CreditInvoice, error) {
 	var credit_invoices []models.CreditInvoice
-	db := database.DB.Find(&credit_invoices)
+	db := database.DB.Preload(clause.Associations).Find(&credit_invoices)
 	return credit_invoices, db.Error
 }
 

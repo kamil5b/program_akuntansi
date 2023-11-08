@@ -3,6 +3,8 @@ package repositories
 import (
 	"program_akuntansi/accountancy_service/database"
 	"program_akuntansi/accountancy_service/models"
+
+	"gorm.io/gorm/clause"
 )
 
 //======GET======
@@ -10,14 +12,14 @@ import (
 // TO KNOW IF THE DEBIT INVOICE EXIST OR NOT
 func IsDebitInvoiceExist(query string, val ...interface{}) bool {
 	var debit_invoice models.DebitInvoice
-	database.DB.Where(query, val...).Last(&debit_invoice)
+	database.DB.Where(query, val...).Preload(clause.Associations).Last(&debit_invoice)
 	return debit_invoice.ID != 0
 }
 
 // TO GET A DEBIT INVOICE
 func GetDebitInvoice(query string, val ...interface{}) (models.DebitInvoice, error) {
 	var debit_invoice models.DebitInvoice
-	db := database.DB.Where(query, val...).Last(&debit_invoice)
+	db := database.DB.Where(query, val...).Preload(clause.Associations).Last(&debit_invoice)
 	if db.Error != nil {
 		return debit_invoice, db.Error
 	}
@@ -27,7 +29,7 @@ func GetDebitInvoice(query string, val ...interface{}) (models.DebitInvoice, err
 // TO GET AN ARRAY OF DEBIT INVOICES (NOT ALL BUT CAN ALL)
 func GetDebitInvoices(query string, val ...interface{}) ([]models.DebitInvoice, error) {
 	var debit_invoices []models.DebitInvoice
-	db := database.DB.Where(query, val...).Find(&debit_invoices)
+	db := database.DB.Where(query, val...).Preload(clause.Associations).Find(&debit_invoices)
 	if db.Error != nil {
 		return debit_invoices, db.Error
 	}
@@ -37,7 +39,7 @@ func GetDebitInvoices(query string, val ...interface{}) ([]models.DebitInvoice, 
 // TO GET ALL DEBIT INVOICES
 func GetAllDebitInvoices() ([]models.DebitInvoice, error) {
 	var debit_invoices []models.DebitInvoice
-	db := database.DB.Find(&debit_invoices)
+	db := database.DB.Preload(clause.Associations).Find(&debit_invoices)
 	if db.Error != nil {
 		return debit_invoices, db.Error
 	}

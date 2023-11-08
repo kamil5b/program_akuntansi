@@ -103,7 +103,7 @@ func StoreUpdate(c *fiber.Ctx) error { //POST
 		})
 	}
 
-	c.Status(201)
+	c.Status(200)
 	return c.JSON(fiber.Map{
 		"status":  200,
 		"message": "success",
