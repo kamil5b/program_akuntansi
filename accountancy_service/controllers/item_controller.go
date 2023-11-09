@@ -1,10 +1,8 @@
 package controllers
 
 import (
-	"log/slog"
 	"program_akuntansi/accountancy_service/models"
 	"program_akuntansi/accountancy_service/repositories"
-	"strconv"
 )
 
 // CREATE
@@ -49,7 +47,6 @@ func GetItemFamilyByID(id uint) ([]models.Item, error) {
 			item = tmp_item
 		}
 	}
-	slog.Info(strconv.Itoa(int(item.ID)))
 	items = append(items, item)
 	for item.SubitemID != 0 && err != nil {
 		item, err = GetItemByID(item.SubitemID)

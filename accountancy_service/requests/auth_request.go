@@ -2,7 +2,6 @@ package requests
 
 import (
 	"errors"
-	"log/slog"
 	"program_akuntansi/accountancy_service/controllers"
 	"program_akuntansi/accountancy_service/models"
 	"program_akuntansi/accountancy_service/services"
@@ -22,7 +21,7 @@ func RegisterUserAuth(c *fiber.Ctx) error { //POST
 	*/
 	if err := c.BodyParser(&data); err != nil {
 		c.Status(401)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  401,
 			"message": err.Error(),
@@ -32,7 +31,7 @@ func RegisterUserAuth(c *fiber.Ctx) error { //POST
 	acc_id, err := GetAccountID(c)
 	if err != nil {
 		c.Status(401)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  401,
 			"message": err.Error(),
@@ -40,7 +39,7 @@ func RegisterUserAuth(c *fiber.Ctx) error { //POST
 	}
 	if err := controllers.RegisterAuthUser(acc_id, data["name"], data["role"]); err != nil {
 		c.Status(401)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  401,
 			"message": err.Error(),
@@ -60,15 +59,14 @@ func LoginUser(c *fiber.Ctx) error { //GET
 	if err != nil {
 		if err.Error() == "record not found" {
 			c.Status(401)
-			slog.Error(err.Error())
-			slog.Error("the account haven't registered yet")
+
 			return c.JSON(fiber.Map{
 				"status":  401,
 				"message": "the account haven't registered yet",
 			})
 		}
 		c.Status(401)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  401,
 			"message": err.Error(),
