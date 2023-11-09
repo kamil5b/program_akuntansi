@@ -8,7 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func SetupTemplate(server_url, db_url, user, password, protocol, db string) {
+func SetupTemplate(server_url string) {
 
 	// database.Connect(
 	// 	db_url, user, password, protocol, db,
