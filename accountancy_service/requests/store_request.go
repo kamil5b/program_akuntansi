@@ -1,7 +1,6 @@
 package requests
 
 import (
-	"log/slog"
 	"program_akuntansi/accountancy_service/controllers"
 	"program_akuntansi/accountancy_service/models"
 
@@ -21,7 +20,7 @@ func StoreCreate(c *fiber.Ctx) error { //POST
 	*/
 	if err := c.BodyParser(&data); err != nil {
 		c.Status(401)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  401,
 			"message": err.Error(),
@@ -35,7 +34,7 @@ func StoreCreate(c *fiber.Ctx) error { //POST
 	id, err := controllers.StoreCreate(data)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  401,
 			"message": err.Error(),
@@ -64,7 +63,7 @@ func StoreUpdate(c *fiber.Ctx) error { //POST
 	*/
 	if err := c.BodyParser(&data); err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -78,7 +77,7 @@ func StoreUpdate(c *fiber.Ctx) error { //POST
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -86,7 +85,7 @@ func StoreUpdate(c *fiber.Ctx) error { //POST
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error("id not valid")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "id not valid",
@@ -95,7 +94,7 @@ func StoreUpdate(c *fiber.Ctx) error { //POST
 	err = controllers.StoreIDUpdate(data.ID, data)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -126,7 +125,7 @@ func GetStoreByID(c *fiber.Ctx) error { //GET
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -134,7 +133,7 @@ func GetStoreByID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error("id not valid")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "id not valid",
@@ -144,7 +143,7 @@ func GetStoreByID(c *fiber.Ctx) error { //GET
 	store, err := controllers.GetStoreByID(uint(id))
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -172,7 +171,7 @@ func GetAllStore(c *fiber.Ctx) error { //GET
 	stores, err := controllers.GetAllStores()
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),

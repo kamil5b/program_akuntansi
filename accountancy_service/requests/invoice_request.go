@@ -1,7 +1,6 @@
 package requests
 
 import (
-	"log/slog"
 	"program_akuntansi/accountancy_service/controllers"
 	"program_akuntansi/accountancy_service/models"
 	"strings"
@@ -34,7 +33,7 @@ func CreateInvoice(c *fiber.Ctx) error { //POST
 	*/
 	if err := c.BodyParser(&data); err != nil {
 		c.Status(401)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  401,
 			"message": err.Error(),
@@ -43,7 +42,7 @@ func CreateInvoice(c *fiber.Ctx) error { //POST
 	if data.InvoiceType == "DEBIT" {
 		if err := AuthUser(c, "AUTH_DEBIT_INVOICE_CREATE"); err != nil {
 			c.Status(403)
-			slog.Error(err.Error())
+
 			return c.JSON(fiber.Map{
 				"status":  403,
 				"message": err.Error(),
@@ -52,7 +51,7 @@ func CreateInvoice(c *fiber.Ctx) error { //POST
 	} else if data.InvoiceType == "CREDIT" {
 		if err := AuthUser(c, "AUTH_CREDIT_INVOICE_CREATE"); err != nil {
 			c.Status(403)
-			slog.Error(err.Error())
+
 			return c.JSON(fiber.Map{
 				"status":  403,
 				"message": err.Error(),
@@ -60,7 +59,7 @@ func CreateInvoice(c *fiber.Ctx) error { //POST
 		}
 	} else {
 		c.Status(400)
-		slog.Error("Invalid invoice type")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "Invalid invoice type",
@@ -79,7 +78,7 @@ func CreateInvoice(c *fiber.Ctx) error { //POST
 			})
 		}
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  401,
 			"message": err.Error(),
@@ -121,7 +120,7 @@ func InputTransaction(c *fiber.Ctx) error {
 	*/
 	if err := c.BodyParser(&data); err != nil {
 		c.Status(401)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  401,
 			"message": err.Error(),
@@ -131,7 +130,7 @@ func InputTransaction(c *fiber.Ctx) error {
 	if data.InvoiceType == "DEBIT" {
 		if err := AuthUser(c, "AUTH_DEBIT_INVOICE_CREATE"); err != nil {
 			c.Status(403)
-			slog.Error(err.Error())
+
 			return c.JSON(fiber.Map{
 				"status":  403,
 				"message": err.Error(),
@@ -140,7 +139,7 @@ func InputTransaction(c *fiber.Ctx) error {
 	} else if data.InvoiceType == "CREDIT" {
 		if err := AuthUser(c, "AUTH_CREDIT_INVOICE_CREATE"); err != nil {
 			c.Status(403)
-			slog.Error(err.Error())
+
 			return c.JSON(fiber.Map{
 				"status":  403,
 				"message": err.Error(),
@@ -148,7 +147,7 @@ func InputTransaction(c *fiber.Ctx) error {
 		}
 	} else {
 		c.Status(400)
-		slog.Error("Invalid invoice type")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "Invalid invoice type",
@@ -158,7 +157,7 @@ func InputTransaction(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -166,7 +165,7 @@ func InputTransaction(c *fiber.Ctx) error {
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error("id not valid")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "id not valid",
@@ -175,7 +174,7 @@ func InputTransaction(c *fiber.Ctx) error {
 	err = controllers.InputTransactionToInvoice(uint(id), data.InvoiceType, data.Transactions)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -204,7 +203,7 @@ func PayTransaction(c *fiber.Ctx) error {
 	*/
 	if err := c.BodyParser(&data); err != nil {
 		c.Status(401)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  401,
 			"message": err.Error(),
@@ -213,7 +212,7 @@ func PayTransaction(c *fiber.Ctx) error {
 	if data.InvoiceType == "DEBIT" {
 		if err := AuthUser(c, "AUTH_DEBIT_PAY"); err != nil {
 			c.Status(403)
-			slog.Error(err.Error())
+
 			return c.JSON(fiber.Map{
 				"status":  403,
 				"message": err.Error(),
@@ -223,7 +222,7 @@ func PayTransaction(c *fiber.Ctx) error {
 	} else if data.InvoiceType == "CREDIT" {
 		if err := AuthUser(c, "AUTH_CREDIT_PAY"); err != nil {
 			c.Status(403)
-			slog.Error(err.Error())
+
 			return c.JSON(fiber.Map{
 				"status":  403,
 				"message": err.Error(),
@@ -231,7 +230,7 @@ func PayTransaction(c *fiber.Ctx) error {
 		}
 	} else {
 		c.Status(400)
-		slog.Error("Invalid invoice type")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "Invalid invoice type",
@@ -241,7 +240,7 @@ func PayTransaction(c *fiber.Ctx) error {
 	id, err := controllers.PayTransactionFromHistory(data)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -267,7 +266,7 @@ func GetAllInvoiceHistory(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_INVOICE_ID"); err != nil {
 		c.Status(403)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  403,
 			"message": err.Error(),
@@ -277,7 +276,7 @@ func GetAllInvoiceHistory(c *fiber.Ctx) error { //GET
 	invoice, err := controllers.GetAllInvoiceHistories()
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -301,7 +300,7 @@ func GetInvoiceHistoryByID(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_INVOICE_ID"); err != nil {
 		c.Status(403)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  403,
 			"message": err.Error(),
@@ -311,7 +310,7 @@ func GetInvoiceHistoryByID(c *fiber.Ctx) error { //GET
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -319,7 +318,7 @@ func GetInvoiceHistoryByID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error("id not valid")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "id not valid",
@@ -329,7 +328,7 @@ func GetInvoiceHistoryByID(c *fiber.Ctx) error { //GET
 	invoice, err := controllers.GetInvoiceHistoryByID(uint(id))
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -353,7 +352,7 @@ func GetInvoiceHistoryByPaymentID(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_INVOICE_PAYMENT_ID"); err != nil {
 		c.Status(403)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  403,
 			"message": err.Error(),
@@ -363,7 +362,7 @@ func GetInvoiceHistoryByPaymentID(c *fiber.Ctx) error { //GET
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -373,7 +372,7 @@ func GetInvoiceHistoryByPaymentID(c *fiber.Ctx) error { //GET
 		invoice, err := controllers.GetInvoiceHistoriesByCash()
 		if err != nil {
 			c.Status(400)
-			slog.Error(err.Error())
+
 			return c.JSON(fiber.Map{
 				"status":  400,
 				"message": err.Error(),
@@ -391,7 +390,7 @@ func GetInvoiceHistoryByPaymentID(c *fiber.Ctx) error { //GET
 	invoice, err := controllers.GetInvoiceHistoryByPaymentID(uint(id))
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -415,7 +414,7 @@ func GetInvoiceHistoriesByPICID(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_INVOICE_PIC_ID"); err != nil {
 		c.Status(403)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  403,
 			"message": err.Error(),
@@ -425,7 +424,7 @@ func GetInvoiceHistoriesByPICID(c *fiber.Ctx) error { //GET
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -433,7 +432,7 @@ func GetInvoiceHistoriesByPICID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error("id not valid")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "id not valid",
@@ -443,7 +442,7 @@ func GetInvoiceHistoriesByPICID(c *fiber.Ctx) error { //GET
 	invoice, err := controllers.GetInvoiceHistoriesByPICID(uint(id))
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -467,7 +466,7 @@ func GetInvoiceHistoriesByInvoiceID(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_HISTORY_INVOICE_ID"); err != nil {
 		c.Status(403)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  403,
 			"message": err.Error(),
@@ -477,7 +476,7 @@ func GetInvoiceHistoriesByInvoiceID(c *fiber.Ctx) error { //GET
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -485,7 +484,7 @@ func GetInvoiceHistoriesByInvoiceID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error("id not valid")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "id not valid",
@@ -495,7 +494,7 @@ func GetInvoiceHistoriesByInvoiceID(c *fiber.Ctx) error { //GET
 	invoice, err := controllers.GetInvoiceHistoriesByInvoiceID(uint(id))
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -520,7 +519,7 @@ func GetInvoiceHistoriesByInvoiceType(c *fiber.Ctx) error { //GET
 	inv_type := strings.ToUpper(c.Params("inv_type"))
 	if inv_type != "DEBIT" && inv_type != "CREDIT" {
 		c.Status(400)
-		slog.Error("invalid invoice type")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "invalid invoice type",
@@ -529,7 +528,7 @@ func GetInvoiceHistoriesByInvoiceType(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_HISTORY_TYPE"); err != nil {
 		c.Status(403)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  403,
 			"message": err.Error(),
@@ -539,7 +538,7 @@ func GetInvoiceHistoriesByInvoiceType(c *fiber.Ctx) error { //GET
 	invoice, err := controllers.GetInvoiceHistoriesByInvoiceType(inv_type)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -565,7 +564,7 @@ func GetInvoiceHistoriesByInvoiceTypeID(c *fiber.Ctx) error { //GET
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -575,7 +574,7 @@ func GetInvoiceHistoriesByInvoiceTypeID(c *fiber.Ctx) error { //GET
 	inv_type := strings.ToUpper(c.Params("inv_type"))
 	if inv_type != "DEBIT" && inv_type != "CREDIT" {
 		c.Status(400)
-		slog.Error("invalid invoice type")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "invalid invoice type",
@@ -583,7 +582,7 @@ func GetInvoiceHistoriesByInvoiceTypeID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error("id not valid")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "id not valid",
@@ -592,7 +591,7 @@ func GetInvoiceHistoriesByInvoiceTypeID(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_INVOICE_PIC_ID"); err != nil {
 		c.Status(403)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  403,
 			"message": err.Error(),
@@ -602,7 +601,7 @@ func GetInvoiceHistoriesByInvoiceTypeID(c *fiber.Ctx) error { //GET
 	invoice, err := controllers.GetInvoiceHistoriesByInvIDType(uint(id), inv_type)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -628,7 +627,7 @@ func GetDebitInvoiceByID(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_DEBIT_INVOICE_ID"); err != nil {
 		c.Status(403)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  403,
 			"message": err.Error(),
@@ -638,7 +637,7 @@ func GetDebitInvoiceByID(c *fiber.Ctx) error { //GET
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -646,7 +645,7 @@ func GetDebitInvoiceByID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error("id not valid")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "id not valid",
@@ -656,7 +655,7 @@ func GetDebitInvoiceByID(c *fiber.Ctx) error { //GET
 	invoice, err := controllers.GetDebitInvoiceByID(uint(id))
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -680,7 +679,7 @@ func GetDebitInvoiceByClientID(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_DEBIT_CLIENT_ID"); err != nil {
 		c.Status(403)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  403,
 			"message": err.Error(),
@@ -690,7 +689,7 @@ func GetDebitInvoiceByClientID(c *fiber.Ctx) error { //GET
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -698,7 +697,7 @@ func GetDebitInvoiceByClientID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error("id not valid")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "id not valid",
@@ -708,7 +707,7 @@ func GetDebitInvoiceByClientID(c *fiber.Ctx) error { //GET
 	invoice, err := controllers.GetDebitInvoicesByClientID(uint(id))
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -732,7 +731,7 @@ func GetAllDebitInvoice(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_ALL_DEBIT_INVOICE"); err != nil {
 		c.Status(403)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  403,
 			"message": err.Error(),
@@ -742,7 +741,7 @@ func GetAllDebitInvoice(c *fiber.Ctx) error { //GET
 	invoice, err := controllers.GetAllDebitInvoices()
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -768,7 +767,7 @@ func GetCreditInvoiceByID(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_CREDIT_INVOICE_ID"); err != nil {
 		c.Status(403)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  403,
 			"message": err.Error(),
@@ -780,7 +779,7 @@ func GetCreditInvoiceByID(c *fiber.Ctx) error { //GET
 	invoice, err := controllers.GetCreditInvoiceByID(id)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -804,7 +803,7 @@ func GetCreditInvoiceByClientID(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_CREDIT_INVOICE_ID"); err != nil {
 		c.Status(403)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  403,
 			"message": err.Error(),
@@ -814,7 +813,7 @@ func GetCreditInvoiceByClientID(c *fiber.Ctx) error { //GET
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -822,7 +821,7 @@ func GetCreditInvoiceByClientID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error("id not valid")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "id not valid",
@@ -832,7 +831,7 @@ func GetCreditInvoiceByClientID(c *fiber.Ctx) error { //GET
 	invoice, err := controllers.GetCreditInvoicesByClientID(uint(id))
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -856,7 +855,7 @@ func GetAllCreditInvoice(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_ALL_CREDIT_INVOICE"); err != nil {
 		c.Status(403)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  403,
 			"message": err.Error(),
@@ -866,7 +865,7 @@ func GetAllCreditInvoice(c *fiber.Ctx) error { //GET
 	invoice, err := controllers.GetAllCreditInvoicess()
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),

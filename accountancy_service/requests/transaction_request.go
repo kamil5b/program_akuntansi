@@ -1,7 +1,6 @@
 package requests
 
 import (
-	"log/slog"
 	"program_akuntansi/accountancy_service/controllers"
 	"strings"
 
@@ -20,7 +19,7 @@ func GetTransactionByID(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_TRANSACTION_ID"); err != nil {
 		c.Status(403)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  403,
 			"message": err.Error(),
@@ -30,7 +29,7 @@ func GetTransactionByID(c *fiber.Ctx) error { //GET
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -38,7 +37,7 @@ func GetTransactionByID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error("id not valid")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "id not valid",
@@ -48,7 +47,7 @@ func GetTransactionByID(c *fiber.Ctx) error { //GET
 	transaction, err := controllers.GetTransactionByID(uint(id))
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -73,7 +72,7 @@ func GetTransactionByInvoiceID(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_TRANSACTION_INVOICE"); err != nil {
 		c.Status(403)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  403,
 			"message": err.Error(),
@@ -82,7 +81,7 @@ func GetTransactionByInvoiceID(c *fiber.Ctx) error { //GET
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -92,7 +91,7 @@ func GetTransactionByInvoiceID(c *fiber.Ctx) error { //GET
 	inv_type := strings.ToUpper(c.Params("inv_type"))
 	if inv_type != "DEBIT" && inv_type != "CREDIT" {
 		c.Status(400)
-		slog.Error("invalid invoice type")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "invalid invoice type",
@@ -100,7 +99,7 @@ func GetTransactionByInvoiceID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error("id not valid")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "id not valid",
@@ -109,7 +108,7 @@ func GetTransactionByInvoiceID(c *fiber.Ctx) error { //GET
 	transactions, err := controllers.GetTransactionByInvoiceID(uint(id), inv_type)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -132,7 +131,7 @@ func GetAllTransaction(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_ALL_TRANSACTION"); err != nil {
 		c.Status(403)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  403,
 			"message": err.Error(),
@@ -142,7 +141,7 @@ func GetAllTransaction(c *fiber.Ctx) error { //GET
 	transactions, err := controllers.GetAllTransactions()
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),

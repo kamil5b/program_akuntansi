@@ -2,7 +2,6 @@ package routes
 
 import (
 	"fmt"
-	"log/slog"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -28,7 +27,6 @@ func Setup(app *fiber.App) {
 		headers := c.GetReqHeaders()
 		if _, ok := headers["Authorization"]; !ok {
 			c.Status(401)
-			slog.Error("authorization header not presented")
 			return c.JSON(fiber.Map{
 				"status":  401,
 				"message": "authorization header not presented",
@@ -36,7 +34,6 @@ func Setup(app *fiber.App) {
 		}
 		if len(headers["Authorization"]) == 0 {
 			c.Status(401)
-			slog.Error("authorization header not presented")
 			return c.JSON(fiber.Map{
 				"status":  401,
 				"message": "authorization header not presented",

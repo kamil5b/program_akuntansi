@@ -1,7 +1,6 @@
 package requests
 
 import (
-	"log/slog"
 	"program_akuntansi/accountancy_service/controllers"
 
 	"github.com/gofiber/fiber/v2"
@@ -18,7 +17,7 @@ func InventoryOpenItem(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_INVENTORY_OPEN"); err != nil {
 		c.Status(403)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  403,
 			"message": err.Error(),
@@ -28,7 +27,7 @@ func InventoryOpenItem(c *fiber.Ctx) error { //GET
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -36,7 +35,7 @@ func InventoryOpenItem(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error("id not valid")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "id not valid",
@@ -46,7 +45,7 @@ func InventoryOpenItem(c *fiber.Ctx) error { //GET
 	unit, err := c.ParamsInt("unit", 0)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -54,7 +53,7 @@ func InventoryOpenItem(c *fiber.Ctx) error { //GET
 	}
 	if unit == 0 {
 		c.Status(200)
-		slog.Error("no inventory opened")
+
 		return c.JSON(fiber.Map{
 			"status":  200,
 			"message": "no inventory opened",
@@ -64,7 +63,7 @@ func InventoryOpenItem(c *fiber.Ctx) error { //GET
 	inv_id, err := controllers.InventoryOpenItem(uint(id), uint(unit))
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -90,7 +89,7 @@ func GetInventoryByID(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_INVENTORY_ID"); err != nil {
 		c.Status(403)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  403,
 			"message": err.Error(),
@@ -100,7 +99,7 @@ func GetInventoryByID(c *fiber.Ctx) error { //GET
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -108,7 +107,7 @@ func GetInventoryByID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error("id not valid")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "id not valid",
@@ -118,7 +117,7 @@ func GetInventoryByID(c *fiber.Ctx) error { //GET
 	inventory, err := controllers.GetInventoryByID(uint(id))
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -141,7 +140,7 @@ func GetAllInventory(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_ALL_INVENTORY"); err != nil {
 		c.Status(403)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  403,
 			"message": err.Error(),
@@ -151,7 +150,7 @@ func GetAllInventory(c *fiber.Ctx) error { //GET
 	inventories, err := controllers.GetAllInventories()
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -170,7 +169,7 @@ func GetCurrentInventoryByID(c *fiber.Ctx) error { //GET
 
 	if err := AuthUser(c, "AUTH_GET_CURRENT_INVENTORY_ID"); err != nil {
 		c.Status(403)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  403,
 			"message": err.Error(),
@@ -180,7 +179,7 @@ func GetCurrentInventoryByID(c *fiber.Ctx) error { //GET
 	id, err := c.ParamsInt("id", 0)
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
@@ -188,7 +187,7 @@ func GetCurrentInventoryByID(c *fiber.Ctx) error { //GET
 	}
 	if id == 0 {
 		c.Status(400)
-		slog.Error("id not valid")
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": "id not valid",
@@ -198,7 +197,7 @@ func GetCurrentInventoryByID(c *fiber.Ctx) error { //GET
 	inventory, err := controllers.GetCurrentInventoryByID(uint(id))
 	if err != nil {
 		c.Status(400)
-		slog.Error(err.Error())
+
 		return c.JSON(fiber.Map{
 			"status":  400,
 			"message": err.Error(),
