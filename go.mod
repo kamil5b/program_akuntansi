@@ -1,6 +1,6 @@
 module program_akuntansi
 
-go 1.20.3
+go 1.21
 
 require (
 	github.com/gofiber/fiber/v2 v2.50.0
