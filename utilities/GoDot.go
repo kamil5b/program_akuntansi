@@ -1,7 +1,6 @@
 package utilities
 
 import (
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
